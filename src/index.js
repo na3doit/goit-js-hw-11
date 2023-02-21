@@ -1,9 +1,27 @@
+import Notiflix from 'notiflix';
+import simpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import axios from 'axios';
+import { getImagesMarkup } from './js/markup';
+import { ImagesApiService } from './js/img-api';
+
 const searchFormEl = document.querySelector('.search-form');
-const inputEl = document.querySelector('input');
-const submitBtnEl = document.querySelector('button');
+const galleryEl = document.querySelector('.gallery');
 
-searchFormEl.addEventListener('submit', onBtnClick);
+const imagesApiService = new ImagesApiService();
+const simpleLightBox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
-function onBtnClick(e) {
+searchFormEl.addEventListener('submit', onFormSubmit);
+
+function onFormSubmit(e) {
   e.preventDefault();
+
+  clearImgGallery();
+}
+
+function clearImgGallery() {
+  galleryEl.innerHTML = '';
 }
