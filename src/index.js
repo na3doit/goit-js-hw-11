@@ -23,20 +23,19 @@ async function onFormSubmit(e) {
 
   imagesApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   if (imagesApiService.query === '') {
-    Notiflix.Notify.info('Please, enter your request');
+    return Notiflix.Notify.info('Please, enter your request');
   }
   imagesApiService.resetPage();
 
   try {
     const { hits, totalHits } = await imagesApiService.fetchImages();
     if (totalHits === 0) {
-      Notiflix.Notify.warning(
+      return Notiflix.Notify.warning(
         'Sorry, there are no images matching your search query. Please try again.'
       );
     }
     Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
     searchFormEl.reset();
-
     renderPictures(hits);
     simpleLightBox.refresh();
   } catch (error) {
