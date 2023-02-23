@@ -10,8 +10,9 @@ export function getImagesMarkup(images) {
         comments,
         downloads,
       }) => {
-        return `<div class="photo-card">a href="${largeImageURL}">
-    <img src="${webformatURL}" alt="${tags}" width="360" loading="lazy" /></a>
+        return `<div class="photo-card">
+        <a href="${largeImageURL}">
+    <img src="${webformatURL}" alt="${tags}"   loading="lazy" /></a>
     <div class="info">
       <p class="info-item">
         <b>Likes</b>${likes}

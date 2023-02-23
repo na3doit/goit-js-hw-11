@@ -9,6 +9,7 @@ export class ImagesApiService {
     this.page = 1;
     this.perPage = 40;
   }
+
   async fetchImages() {
     const options = new URLSearchParams({
       key: API_KEY,
@@ -19,17 +20,19 @@ export class ImagesApiService {
       per_page: this.perPage,
       page: this.page,
     });
-
-    const { data } = await axios(`${options}`);
+    const { data } = await axios(`?${options}`);
     this.page += 1;
     return data;
   }
+
   resetPage() {
     this.page = 1;
   }
+
   get query() {
     return this.searchQuery;
   }
+
   set query(newQuery) {
     this.searchQuery = newQuery;
   }
