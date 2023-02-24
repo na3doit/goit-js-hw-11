@@ -38,6 +38,22 @@ async function onFormSubmit(e) {
     searchFormEl.reset();
     renderPictures(hits);
     simpleLightBox.refresh();
+
+    // функция, которая загружает дополнительные элементы
+    function loadMore() {
+      // код для загрузки новых элементов
+      renderPictures(totalHits);
+    }
+
+    // функция, которая определяет, когда пользователь прокрутил до конца страницы
+    function handleScroll() {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        loadMore();
+      }
+    }
+
+    // добавляем обработчик события для прокрутки страницы
+    window.addEventListener('scroll', handleScroll);
   } catch (error) {
     Notiflix.Notify.failure('Something is wrong...');
   }
