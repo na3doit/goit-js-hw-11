@@ -2,7 +2,7 @@ export class LoadMoreBtn {
   constructor(className, onLoadMore) {
     document.body.insertAdjacentHTML(
       'beforeend',
-      `<button type="button" class="${className}">Load more</button>`
+      `<button type="button" class="${className}" >Load more</button>`
     );
     this.loadMoreBtn = document.querySelector(`.${className}`);
     this.loadMoreBtn.addEventListener('click', onLoadMore);

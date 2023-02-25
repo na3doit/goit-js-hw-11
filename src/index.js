@@ -5,11 +5,13 @@ import Notiflix from 'notiflix';
 import { getImagesMarkup } from './js/markup';
 import { ImagesApiService } from './js/img-api';
 import { LoadMoreBtn } from './js/load-more';
+import { MessagesNoti } from './js/messages';
 
 const searchFormEl = document.querySelector('#search-form');
 const galleryEl = document.querySelector('.gallery');
 
 const imagesApiService = new ImagesApiService();
+const messagesNoti = new MessagesNoti();
 const loadMoreBtn = new LoadMoreBtn('load-more', onLoadMoreBtn);
 const simpleLightBox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
@@ -24,25 +26,28 @@ async function onFormSubmit(e) {
 
   imagesApiService.query = e.currentTarget.elements.searchQuery.value.trim();
   if (imagesApiService.query === '') {
-    return Notiflix.Notify.info('Please, enter your request');
+    return messagesNoti.getInfo();
   }
+
   imagesApiService.resetPage();
 
   try {
     const { hits, totalHits } = await imagesApiService.fetchImages();
     if (totalHits === 0) {
-      return Notiflix.Notify.warning(
-        'Sorry, there are no images matching your search query. Please try again.'
-      );
+      return messagesNoti.getWarning();
     }
-    Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+    messagesNoti.getSuccess(totalHits);
 
     renderPictures(hits);
     simpleLightBox.refresh();
     loadMoreBtn.show();
+
     searchFormEl.reset();
+    if (totalHits < imagesApiService.perPage) {
+      loadMoreBtn.hide();
+    }
   } catch (error) {
-    Notiflix.Notify.failure('Something is wrong...');
+    messagesNoti.getFailure();
   }
 }
 async function onLoadMoreBtn() {
@@ -55,10 +60,10 @@ async function onLoadMoreBtn() {
 
     if (hits.length < imagesApiService.perPage) {
       loadMoreBtn.hide();
-      Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+      messagesNoti.getSuccess(totalHits);
     }
   } catch (error) {
-    return Notiflix.Notify.failure('Something is wrong...');
+    return messagesNoti.getFailure();
   }
 }
 
