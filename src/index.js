@@ -15,6 +15,7 @@ const simpleLightBox = new SimpleLightbox('.gallery a', {
 });
 
 searchFormEl.addEventListener('submit', onFormSubmit);
+// loadMoreBtn.addEventListener('click', onLoadMoreBtn);
 
 async function onFormSubmit(e) {
   e.preventDefault();
@@ -35,25 +36,10 @@ async function onFormSubmit(e) {
       );
     }
     Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
-    searchFormEl.reset();
+
     renderPictures(hits);
     simpleLightBox.refresh();
-
-    // функция, которая загружает дополнительные элементы
-    function loadMore() {
-      // код для загрузки новых элементов
-      renderPictures(totalHits);
-    }
-
-    // функция, которая определяет, когда пользователь прокрутил до конца страницы
-    function handleScroll() {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        loadMore();
-      }
-    }
-
-    // добавляем обработчик события для прокрутки страницы
-    window.addEventListener('scroll', handleScroll);
+    searchFormEl.reset();
   } catch (error) {
     Notiflix.Notify.failure('Something is wrong...');
   }
