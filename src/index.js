@@ -4,22 +4,22 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import Notiflix from 'notiflix';
 import { getImagesMarkup } from './js/markup';
 import { ImagesApiService } from './js/img-api';
+import { LoadMoreBtn } from './js/load-more';
 
 const searchFormEl = document.querySelector('#search-form');
 const galleryEl = document.querySelector('.gallery');
 
 const imagesApiService = new ImagesApiService();
+const loadMoreBtn = new LoadMoreBtn('load-more', onLoadMoreBtn);
 const simpleLightBox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
 
 searchFormEl.addEventListener('submit', onFormSubmit);
-// loadMoreBtn.addEventListener('click', onLoadMoreBtn);
 
 async function onFormSubmit(e) {
   e.preventDefault();
-
   clearImgGallery();
 
   imagesApiService.query = e.currentTarget.elements.searchQuery.value.trim();
@@ -39,9 +39,26 @@ async function onFormSubmit(e) {
 
     renderPictures(hits);
     simpleLightBox.refresh();
+    loadMoreBtn.show();
     searchFormEl.reset();
   } catch (error) {
     Notiflix.Notify.failure('Something is wrong...');
+  }
+}
+async function onLoadMoreBtn() {
+  loadMoreBtn.loading();
+  try {
+    const { hits } = await imagesApiService.fetchImages();
+    renderPictures(hits);
+    simpleLightBox.refresh();
+    loadMoreBtn.endLoading();
+
+    if (hits.length < imagesApiService.perPage) {
+      loadMoreBtn.hide();
+      Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+    }
+  } catch (error) {
+    return Notiflix.Notify.failure('Something is wrong...');
   }
 }
 
